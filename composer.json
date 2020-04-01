@@ -1,0 +1,44 @@
+{
+    "name": "kbergha/craft-revisjonsspor",
+    "description": "Audit trail - audit logging in Craft CMS",
+    "type": "craft-plugin",
+    "version": "1.0.0-alfa",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "craft-revisjonsspor",
+        "audit",
+        "logging",
+        "log"
+    ],
+    "support": {
+        "docs": "https://github.com/kbergha/craft-revisjonsspor/blob/master/README.md",
+        "issues": "https://github.com/kbergha/craft-revisjonsspor/issues"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Knut Erik Berg-Hansen",
+            "homepage": "https://github.com/kbergha"
+        }
+    ],
+    "require": {
+        "craftcms/cms": "^3.4.0"
+    },
+    "autoload": {
+        "psr-4": {
+          "kbergha\\craftrevisjonsspor\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "craft-revisjonsspor",
+        "handle": "craft-revisjonsspor",
+        "developer": "Knut Erik Berg-Hansen",
+        "developerUrl": "https://github.com/kbergha",
+        "documentationUrl": "https://github.com/kbergha/craft-revisjonsspor/blob/master/README.md",
+        "changelogUrl": "https://raw.githubusercontent.com/kbergha/craft-revisjonsspor/master/CHANGELOG.md",
+        "class": "kbergha\\revisjonsspor\\Revisjonsspor"
+    }
+}
