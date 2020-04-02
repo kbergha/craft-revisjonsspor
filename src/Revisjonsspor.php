@@ -15,10 +15,12 @@ namespace kbergha\revisjonsspor;
 use Craft;
 use craft\base\Plugin;
 use craft\services\Plugins;
-use craft\events\PluginEvent;
 use kbergha\revisjonsspor\models\Settings;
 
+use kbergha\revisjonsspor\services\EventListener;
 use yii\base\Event;
+use yii\web\User;
+use yii\web\UserEvent;
 
 /**
  * Craft plugins are very much like little applications in and of themselves. We’ve made
@@ -32,7 +34,8 @@ use yii\base\Event;
  *
  * @author    Knut Erik Berg-Hansen
  * @package   Revisjonsspor
- * @since     1.0.0-alfa
+ * @since     1.0.0-alpha
+ * @property  EventListener $listener
  *
  */
 class Revisjonsspor extends Plugin
@@ -56,7 +59,7 @@ class Revisjonsspor extends Plugin
      *
      * @var string
      */
-    public $schemaVersion = '1.0.0-alfa';
+    public $schemaVersion = '1.0.0-alpha';
 
     /**
      * Set to `true` if the plugin should have a settings view in the control panel.
@@ -91,6 +94,10 @@ class Revisjonsspor extends Plugin
         parent::init();
         self::$plugin = $this;
 
+        $this->setComponents([
+            'listener' => EventListener::class
+        ]);
+
         // Add in our Twig extensions
         // Craft::$app->view->registerTwigExtension(new RevisjonssporTwigExtension());
 
@@ -98,14 +105,17 @@ class Revisjonsspor extends Plugin
         $request = Craft::$app->getRequest();
 
         // @todo: Handle site request if user is logged in?
-        // @todo: Consider what to to with preview/live preview requests as well.
-        if ($request->isCpRequest === true && $request->isConsoleRequest === false) {
+        // @todo: Consider what to do with preview / live preview requests as well.
+        if ($this->getSettings()->enabled === true &&
+            $request->isCpRequest === true &&
+            $request->isConsoleRequest === false
+        ) {
             Event::on(
                 Plugins::class,
                 Plugins::EVENT_AFTER_LOAD_PLUGINS,
                 function () {
                     // All plugins loaded. Party time!
-                    // @todo: do something usefull
+                    $this->listener->addEventListeners();
                 }
             );
         }
@@ -127,5 +137,4 @@ class Revisjonsspor extends Plugin
     {
         return new Settings();
     }
-
 }

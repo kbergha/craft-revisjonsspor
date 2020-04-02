@@ -23,7 +23,7 @@ use Craft;
  *
  * @author    Knut Erik Berg-Hansen
  * @package   Revisjonsspor
- * @since     1.0.0-alfa
+ * @since     1.0.0-alpha
  */
 class RevisjonssporTwigExtension extends \Twig_Extension
 {

@@ -18,7 +18,7 @@
  *
  * @author    Knut Erik Berg-Hansen
  * @package   Revisjonsspor
- * @since     1.0.0-alfa
+ * @since     1.0.0-alpha
  */
 return [
     'craft-revisjonsspor plugin loaded' => 'craft-revisjonsspor plugin loaded',
