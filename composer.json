@@ -34,7 +34,7 @@
     },
     "extra": {
         "name": "craft-revisjonsspor",
-        "handle": "craft-revisjonsspor",
+        "handle": "revisjonsspor",
         "developer": "Knut Erik Berg-Hansen",
         "developerUrl": "https://github.com/kbergha",
         "documentationUrl": "https://github.com/kbergha/craft-revisjonsspor/blob/master/README.md",
