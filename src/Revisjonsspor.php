@@ -19,8 +19,6 @@ use kbergha\revisjonsspor\models\Settings;
 
 use kbergha\revisjonsspor\services\EventListener;
 use yii\base\Event;
-use yii\web\User;
-use yii\web\UserEvent;
 
 /**
  * Craft plugins are very much like little applications in and of themselves. We’ve made
