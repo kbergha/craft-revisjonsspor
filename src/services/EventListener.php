@@ -7,7 +7,8 @@ use kbergha\revisjonsspor\Revisjonsspor;
 use yii\base\Component;
 use yii\base\Event;
 use yii\web\User;
-use yii\web\UserEvent;
+use yii\web\UserEvent as YiiUserEvent;
+use craft\events\UserEvent as CraftUserEvent;
 use craft\events\ElementEvent;
 use craft\events\UserGroupsAssignEvent;
 use craft\services\Elements;
@@ -28,7 +29,7 @@ class EventListener extends Component
         Event::on(
             User::class,
             User::EVENT_AFTER_LOGIN,
-            function(UserEvent $event) {
+            function(YiiUserEvent $event) {
                 $this->onLogin(User::EVENT_AFTER_LOGIN);
             }
         );
@@ -36,17 +37,16 @@ class EventListener extends Component
         Event::on(
             User::class,
             User::EVENT_BEFORE_LOGOUT,
-            function(UserEvent $event) {
+            function(YiiUserEvent $event) {
                 $this->onLogout(User::EVENT_BEFORE_LOGOUT);
             }
         );
 
-
         Event::on(
             Users::class,
             Users::EVENT_AFTER_ACTIVATE_USER,
-            function($event) {
-                //$this->onLogout(Users::EVENT_AFTER_ACTIVATE_USER);
+            function(CraftUserEvent $event) {
+                $this->onActivatedUser(Users::EVENT_AFTER_ACTIVATE_USER, $event);
             }
         );
 
@@ -58,7 +58,6 @@ class EventListener extends Component
             }
         );
 
-        // @todo Users::EVENT_AFTER_ACTIVATE_USER ??
 
         /*
          * Elements events (Assets, Users, Entries, Categories +++)
@@ -83,12 +82,28 @@ class EventListener extends Component
 
 
         /*
-         * Some other events
+         * Some other events - none so far
          */
+
     }
 
     /**
-     * Whan a user is added or removed from user groups.
+     * When a user is activated.
+     *
+     * @param $eventName
+     * @param UserGroupsAssignEvent $event
+     */
+    public function onActivatedUser($eventName, CraftUserEvent $event)
+    {
+
+        $properties = $this->getDefaultProperties($eventName);
+        $user = $event->user;
+        $message = 'User with username '.$user->username.', email '.$user->email.' and id '.$user->getId().' was activated';
+        $this->log($message, $properties);
+    }
+
+    /**
+     * When a user is added or removed from user groups.
      *
      * @param $eventName
      * @param UserGroupsAssignEvent $event
@@ -103,7 +118,7 @@ class EventListener extends Component
 
         $properties = $this->getDefaultProperties($eventName);
         $message = 'User with id '.$event->userId .' '.$userGroupString.' by '.$properties['userName'].' (id: '.$properties['userId'].')';
-        $this->log($message);
+        $this->log($message, $properties);
     }
 
     /**
@@ -157,13 +172,20 @@ class EventListener extends Component
             $status = 'created';
         }
 
+        /*@todo: DRY */
         $userInfo = '';
         if ($element instanceof \craft\elements\User) {
             /* @var $element \craft\elements\User */
             $userInfo = 'username: '.$element->username.', email: '. $element->email.', ';
         }
 
-        $this->log('Element of type "'.$element->displayName(). '" ('.$userInfo.'id: '.$properties['elementId'].') was '.$status.' by user '.$properties['userName'].' (id: '.$properties['userId'].')');
+        /*@todo: DRY */
+        $by = '';
+        if ($properties['userId'] !== null) {
+            $by = ' by user '.$properties['userName'].' (id: '.$properties['userId'].')';
+        }
+
+        $this->log('Element of type "'.$element->refHandle(). '" ('.$userInfo.'id: '.$properties['elementId'].') was '.$status.$by, $properties);
     }
 
 
@@ -187,13 +209,20 @@ class EventListener extends Component
         $properties['elementUid'] = $element->getSourceUid();
         $properties['class'] = get_class($element);
 
+        /*@todo: DRY */
         $userInfo = '';
         if ($element instanceof \craft\elements\User) {
             /* @var $element \craft\elements\User */
             $userInfo = 'username: '.$element->username.', email: '. $element->email.', ';
         }
 
-        $this->log('Element of type "'.$element->displayName(). '" ('.$userInfo.'id: '.$properties['elementId'].') was deleted by user '.$properties['userName'].' (id: '.$properties['userId'].')');
+        /*@todo: DRY */
+        $by = '';
+        if ($properties['userId'] !== null) {
+            $by = ' by user '.$properties['userName'].' (id: '.$properties['userId'].')';
+        }
+
+        $this->log('Element of type "'.$element->refHandle(). '" ('.$userInfo.'id: '.$properties['elementId'].') was deleted'.$by);
     }
 
 
@@ -239,11 +268,14 @@ class EventListener extends Component
     {
         try {
             $settings = Revisjonsspor::$plugin->getSettings();
-            if (is_array($properties) && count($properties) > 0) {
+
+            if ($settings->properties === true && is_array($properties) && count($properties) > 0) {
+                // @todo: consider options for logging properties - not always json.
                 $message .= ' - props: '.\json_encode($properties);
             }
 
-            Craft::getLogger()->log($message, $settings['level'], $settings['category']);
+            Craft::getLogger()->log($message, $settings->level, $settings->category);
+
         } catch (\Exception $e) {
             Craft::getLogger()->log('Could not log to audit log, exception error message: '.$e->getMessage(), Craft::getLogger()::LEVEL_ERROR);
         }

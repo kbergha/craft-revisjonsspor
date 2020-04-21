@@ -101,12 +101,17 @@ class Revisjonsspor extends Plugin
 
         // Check request.
         $request = Craft::$app->getRequest();
-
-        // @todo: Handle site request if user is logged in?
         // @todo: Consider what to do with preview / live preview requests as well.
-        if ($this->getSettings()->enabled === true &&
-            $request->isCpRequest === true &&
-            $request->isConsoleRequest === false
+
+        $settings = $this->getSettings();
+        /* @var $settings Settings */
+
+        $logIfBackend = ($request->isCpRequest === true && $settings->backend === true) ? true : false;
+        $logIfFrontend = ($request->isSiteRequest === true && $settings->frontend === true) ? true : false;
+
+        if ($settings->enabled === true &&
+            $request->isConsoleRequest === false &&
+            ($logIfBackend || $logIfFrontend)
         ) {
             Event::on(
                 Plugins::class,

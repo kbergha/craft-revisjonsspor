@@ -17,9 +17,21 @@
  * Level: The level. Yes. See constants under https://www.yiiframework.com/doc/api/2.0/yii-log-logger
  * Default is Logger::LEVEL_INFO
  *
+ * Backend
+ * Determines if we're logging if we're in admin / control panel / backend mode
+ *
+ * Frontend
+ * Determines if we're logging if we're in site mode / frontend.
+ *
+ * Properties
+ * Enable to log all properties. See EventListener->getDefaultProperties()
+ *
  */
 return [
     'enabled' => true,
     'category' => 'audit',
-    'level' => Craft::getLogger()::LEVEL_INFO
+    'level' => Craft::getLogger()::LEVEL_INFO,
+    'backend' => true,
+    'frontend' => true,
+    'properties' => false
 ];

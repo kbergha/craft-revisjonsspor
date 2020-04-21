@@ -2,7 +2,7 @@
     "name": "kbergha/craft-revisjonsspor",
     "description": "Audit trail - audit logging in Craft CMS",
     "type": "craft-plugin",
-    "version": "1.0.0-alpha2",
+    "version": "1.0.0-alpha3",
     "keywords": [
         "craft",
         "cms",
