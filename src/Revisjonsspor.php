@@ -123,7 +123,7 @@ class Revisjonsspor extends Plugin
             );
         }
 
-        Craft::info(
+        Craft::debug(
             Craft::t(
                 'revisjonsspor',
                 '{name} plugin loaded',

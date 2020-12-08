@@ -3,7 +3,12 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
-
+## 1.0.0-alpha5 - 2020-12-08
+### Changed
+- Lowered logging level of plugin init from info to debug.
+## 1.0.0-alpha4 - 2020-12-08
+### Fixes
+- Fixes PSR-4 namespace/composer 2.0 issue
 ## 1.0.0-alpha3 - 2020-04-21
 ### Added
 - Adds logging of user activation.
